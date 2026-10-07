@@ -1,0 +1,2702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BATALLA CARTESIANA</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:
+        radial-gradient(circle at top,#243b55,#101820 65%);
+    color:#fff;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+button{
+    font-family:inherit;
+    cursor:pointer;
+}
+
+.screen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.hidden{
+    display:none!important;
+}
+
+/* =========================
+   INICIO
+========================= */
+
+.card{
+    width:min(720px,100%);
+    background:rgba(10,18,28,.94);
+    border:2px solid #3d6387;
+    border-radius:24px;
+    padding:30px;
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+    text-align:center;
+}
+
+.logo{
+    font-size:clamp(36px,8vw,70px);
+    font-weight:900;
+    letter-spacing:2px;
+    color:#ffd54a;
+    text-shadow:4px 4px 0 #17202a;
+}
+
+.subtitle{
+    font-size:20px;
+    color:#9ed8ff;
+    margin-bottom:25px;
+}
+
+.rene{
+    background:linear-gradient(135deg,#17212b,#273746);
+    border-radius:18px;
+    padding:20px;
+    margin:20px 0;
+    border:1px solid #52697e;
+}
+
+.rene-face{
+    font-size:70px;
+}
+
+.rene-name{
+    font-size:28px;
+    font-weight:900;
+    color:#ffca3a;
+}
+
+.rene-text{
+    font-size:18px;
+    line-height:1.5;
+}
+
+.main-btn{
+    width:100%;
+    border:0;
+    border-radius:15px;
+    padding:17px 20px;
+    font-size:20px;
+    font-weight:900;
+    color:#111;
+    background:linear-gradient(135deg,#ffd54a,#ff9f1c);
+    box-shadow:0 7px 0 #a75b00;
+    transition:.15s;
+}
+
+.main-btn:hover{
+    transform:translateY(-2px);
+}
+
+.main-btn:active{
+    transform:translateY(5px);
+    box-shadow:0 2px 0 #a75b00;
+}
+
+/* =========================
+   PREPARACIÓN
+========================= */
+
+.prep-list{
+    text-align:left;
+    margin:25px auto;
+    max-width:560px;
+}
+
+.prep-list div{
+    background:#172534;
+    border-radius:10px;
+    padding:11px 14px;
+    margin:7px 0;
+    border-left:5px solid #ffd54a;
+}
+
+.warning{
+    background:#422323;
+    border:1px solid #9e4c4c;
+    padding:15px;
+    border-radius:12px;
+    margin:20px 0;
+}
+
+/* =========================
+   JUEGO
+========================= */
+
+.game-wrap{
+    width:min(1150px,100%);
+}
+
+.game-header{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+}
+
+.game-title{
+    font-size:30px;
+    font-weight:900;
+    color:#ffd54a;
+}
+
+.stats{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.stat{
+    background:#182735;
+    border:1px solid #38546b;
+    padding:8px 12px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.game-grid{
+    display:grid;
+    grid-template-columns:minmax(300px,700px) minmax(250px,350px);
+    gap:18px;
+    align-items:start;
+}
+
+.board-card,
+.control-card{
+    background:rgba(9,17,26,.94);
+    border:1px solid #3b566e;
+    border-radius:18px;
+    padding:14px;
+}
+
+canvas{
+    display:block;
+    width:100%;
+    max-width:700px;
+    height:auto;
+    margin:auto;
+    background:#f4f6f7;
+    border-radius:10px;
+}
+
+.message{
+    min-height:62px;
+    background:#172534;
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:12px;
+    font-size:18px;
+    line-height:1.35;
+    text-align:center;
+    border-left:5px solid #ffd54a;
+}
+
+.coordinate-display{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:12px;
+}
+
+.coord-box{
+    background:#111b25;
+    border:2px solid #415d74;
+    border-radius:12px;
+    padding:10px 18px;
+    min-width:100px;
+    text-align:center;
+}
+
+.coord-label{
+    font-size:12px;
+    color:#9eb4c7;
+}
+
+.coord-value{
+    font-size:27px;
+    font-weight:900;
+}
+
+/* =========================
+   TECLADO
+========================= */
+
+.axis-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.axis-btn{
+    padding:12px;
+    border:0;
+    border-radius:10px;
+    background:#31475a;
+    color:#fff;
+    font-weight:900;
+}
+
+.axis-btn.active{
+    background:#ffd54a;
+    color:#111;
+}
+
+.sign-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.sign-btn{
+    padding:12px;
+    border:0;
+    border-radius:10px;
+    background:#40586c;
+    color:white;
+    font-weight:bold;
+}
+
+.keypad{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:7px;
+}
+
+.key{
+    border:0;
+    border-radius:10px;
+    padding:13px 5px;
+    background:#253849;
+    color:#fff;
+    font-size:18px;
+    font-weight:900;
+}
+
+.key:hover{
+    background:#35526a;
+}
+
+.key.special{
+    background:#4a6174;
+}
+
+.attack-btn{
+    width:100%;
+    border:0;
+    margin-top:10px;
+    padding:15px;
+    border-radius:12px;
+    background:#e63946;
+    color:#fff;
+    font-size:20px;
+    font-weight:900;
+    box-shadow:0 5px 0 #8e1d25;
+}
+
+.attack-btn:active{
+    transform:translateY(4px);
+    box-shadow:0 1px 0 #8e1d25;
+}
+
+.history{
+    margin-top:15px;
+    max-height:220px;
+    overflow:auto;
+    background:#111b25;
+    border-radius:12px;
+    padding:10px;
+}
+
+.history-title{
+    font-weight:900;
+    margin-bottom:7px;
+    color:#ffd54a;
+}
+
+.shot{
+    padding:6px 8px;
+    margin:4px 0;
+    border-radius:7px;
+    background:#1c2b39;
+    font-size:14px;
+}
+
+.shot.hit{
+    border-left:4px solid #e63946;
+}
+
+.shot.water{
+    border-left:4px solid #42a5f5;
+}
+
+.shot.sunk{
+    border-left:4px solid #111;
+}
+
+/* =========================
+   OVERLAYS
+========================= */
+
+.overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(3,7,11,.94);
+    z-index:1000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.overlay.active{
+    display:flex;
+}
+
+.overlay-card{
+    width:min(700px,100%);
+    max-height:94vh;
+    overflow:auto;
+    background:linear-gradient(145deg,#152331,#0c141d);
+    border:2px solid #4e6d87;
+    border-radius:24px;
+    padding:28px;
+    text-align:center;
+    box-shadow:0 25px 90px rgba(0,0,0,.7);
+}
+
+.reaction-icon{
+    font-size:80px;
+    line-height:1;
+    margin-bottom:10px;
+}
+
+.reaction-title{
+    font-size:clamp(28px,7vw,50px);
+    font-weight:1000;
+    color:#ffd54a;
+    margin:5px 0 15px;
+}
+
+.reaction-text{
+    font-size:20px;
+    line-height:1.5;
+    margin-bottom:22px;
+}
+
+.overlay-buttons{
+    display:grid;
+    gap:10px;
+}
+
+.continue-btn{
+    border:0;
+    border-radius:13px;
+    padding:15px;
+    background:#ffd54a;
+    color:#111;
+    font-size:19px;
+    font-weight:900;
+}
+
+.abandon-btn{
+    border:1px solid #a44;
+    border-radius:13px;
+    padding:13px;
+    background:#391f23;
+    color:#ffb8b8;
+    font-size:17px;
+    font-weight:900;
+}
+
+/* =========================
+   FINAL
+========================= */
+
+.end-card{
+    width:min(1050px,100%);
+}
+
+.final-title{
+    font-size:clamp(35px,7vw,62px);
+    font-weight:1000;
+    color:#ffd54a;
+}
+
+.final-subtitle{
+    font-size:20px;
+    margin-bottom:15px;
+}
+
+.final-board{
+    max-width:700px;
+    margin:15px auto;
+}
+
+.legend{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:7px;
+    margin:12px 0;
+}
+
+.legend-item{
+    padding:7px 10px;
+    border-radius:8px;
+    background:#1c2b39;
+    font-size:13px;
+}
+
+.legend-dot{
+    display:inline-block;
+    width:11px;
+    height:11px;
+    border-radius:50%;
+    margin-right:4px;
+}
+
+.end-message{
+    background:#182735;
+    border-radius:14px;
+    padding:16px;
+    margin:12px 0;
+    font-size:18px;
+    line-height:1.45;
+}
+
+.restart-btn{
+    border:0;
+    border-radius:13px;
+    padding:15px 25px;
+    background:#ffd54a;
+    color:#111;
+    font-size:19px;
+    font-weight:900;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:850px){
+    .game-grid{
+        grid-template-columns:1fr;
+    }
+
+    .game-title{
+        width:100%;
+        text-align:center;
+    }
+}
+
+@media(max-width:500px){
+    .screen{
+        padding:10px;
+    }
+
+    .card,
+    .overlay-card{
+        padding:18px;
+        border-radius:18px;
+    }
+
+    .logo{
+        font-size:40px;
+    }
+
+    .rene-face{
+        font-size:55px;
+    }
+
+    .reaction-icon{
+        font-size:60px;
+    }
+
+    .reaction-text{
+        font-size:17px;
+    }
+
+    .key{
+        padding:11px 4px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     INICIO
+===================================================== -->
+
+<section id="startScreen" class="screen">
+    <div class="card">
+
+        <div class="logo">⚔️ BATALLA<br>CARTESIANA</div>
+
+        <div class="subtitle">
+            El plano cartesiano se convirtió en campo de batalla.
+        </div>
+
+        <div class="rene">
+            <div class="rene-face">🤖</div>
+            <div class="rene-name">RENÉ — EL RIVAL</div>
+
+            <div class="rene-text">
+                <b>RENÉ:</b><br>
+                “Bienvenido a mi plano cartesiano...”
+                <br><br>
+                “Yo ya preparé mi flota y vos todavía
+                estás tratando de acordarte dónde queda
+                el eje X. 😏”
+                <br><br>
+                “A ver si tenés la estrategia suficiente
+                para encontrarme.”
+            </div>
+        </div>
+
+        <button class="main-btn" onclick="showPrep()">
+            🚀 COMENZAR BATALLA
+        </button>
+
+    </div>
+</section>
+
+
+<!-- =====================================================
+     PREPARACIÓN
+===================================================== -->
+
+<section id="prepScreen" class="screen hidden">
+    <div class="card">
+
+        <div class="logo" style="font-size:42px">
+            🗺️ PREPARÁ TU FLOTA
+        </div>
+
+        <p style="font-size:19px;line-height:1.5">
+            Antes de enfrentarnos, prepará tu flota en una hoja.
+        </p>
+
+        <div class="prep-list">
+
+            <div>📐 Dibujá un plano cartesiano desde <b>−10 hasta +10</b> en ambos ejes.</div>
+
+            <div>🚢 Portaaviones — <b>5 posiciones</b></div>
+
+            <div>🛳️ Acorazado — <b>4 posiciones</b></div>
+
+            <div>🚤 Crucero — <b>3 posiciones</b></div>
+
+            <div>🛥️ Submarino — <b>3 posiciones</b></div>
+
+            <div>🚢 Destructor — <b>2 posiciones</b></div>
+
+            <div>🎯 Total: <b>17 posiciones</b></div>
+
+            <div>⚠️ Los barcos no pueden superponerse.</div>
+
+        </div>
+
+        <div class="warning">
+            <b>IMPORTANTE:</b><br>
+            Tu flota queda solamente en tu hoja.
+            RENÉ no la conoce.
+            <br><br>
+            Él también preparó una flota secreta...
+            <br><br>
+            <b>Escondela bien, porque piensa encontrarte.</b> 😈
+        </div>
+
+        <button class="main-btn" onclick="startGame()">
+            ⚔️ ESTOY LISTO
+        </button>
+
+    </div>
+</section>
+
+
+<!-- =====================================================
+     JUEGO
+===================================================== -->
+
+<section id="gameScreen" class="screen hidden">
+
+    <div class="game-wrap">
+
+        <div class="game-header">
+
+            <div class="game-title">
+                ⚔️ BATALLA CARTESIANA
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    🎯 Vos: <span id="playerScore">0</span>/17
+                </div>
+
+                <div class="stat">
+                    🤖 RENÉ: <span id="computerScore">0</span>/17
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="game-grid">
+
+            <!-- TABLERO -->
+            <div class="board-card">
+
+                <canvas id="board" width="700" height="700"></canvas>
+
+            </div>
+
+
+            <!-- CONTROLES -->
+            <div class="control-card">
+
+                <div id="message" class="message">
+                    🎯 Tu turno. Elegí una coordenada para atacar.
+                </div>
+
+                <div class="coordinate-display">
+
+                    <div class="coord-box">
+                        <div class="coord-label">EJE X</div>
+                        <div id="xDisplay" class="coord-value">0</div>
+                    </div>
+
+                    <div class="coord-box">
+                        <div class="coord-label">EJE Y</div>
+                        <div id="yDisplay" class="coord-value">0</div>
+                    </div>
+
+                </div>
+
+
+                <div class="axis-buttons">
+
+                    <button id="axisX"
+                            class="axis-btn active"
+                            onclick="selectAxis('x')">
+                        X
+                    </button>
+
+                    <button id="axisY"
+                            class="axis-btn"
+                            onclick="selectAxis('y')">
+                        Y
+                    </button>
+
+                </div>
+
+
+                <div class="sign-buttons">
+
+                    <button class="sign-btn"
+                            onclick="setSign('x',1)">
+                        X +
+                    </button>
+
+                    <button class="sign-btn"
+                            onclick="setSign('x',-1)">
+                        X −
+                    </button>
+
+                    <button class="sign-btn"
+                            onclick="setSign('y',1)">
+                        Y +
+                    </button>
+
+                    <button class="sign-btn"
+                            onclick="setSign('y',-1)">
+                        Y −
+                    </button>
+
+                </div>
+
+
+                <div class="keypad">
+
+                    <button class="key" onclick="pressDigit(1)">1</button>
+                    <button class="key" onclick="pressDigit(2)">2</button>
+                    <button class="key" onclick="pressDigit(3)">3</button>
+
+                    <button class="key" onclick="pressDigit(4)">4</button>
+                    <button class="key" onclick="pressDigit(5)">5</button>
+                    <button class="key" onclick="pressDigit(6)">6</button>
+
+                    <button class="key" onclick="pressDigit(7)">7</button>
+                    <button class="key" onclick="pressDigit(8)">8</button>
+                    <button class="key" onclick="pressDigit(9)">9</button>
+
+                    <button class="key special" onclick="clearCurrent()">AC</button>
+                    <button class="key" onclick="pressDigit(0)">0</button>
+                    <button class="key special" onclick="backspace()">⌫</button>
+
+                </div>
+
+
+                <button class="attack-btn" onclick="playerAttack()">
+                    🎯 ATACAR
+                </button>
+
+
+                <div class="history">
+
+                    <div class="history-title">
+                        📜 MIS ATAQUES
+                    </div>
+
+                    <div id="historyList">
+                        Todavía no atacaste.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     REACCIÓN
+===================================================== -->
+
+<div id="reactionOverlay" class="overlay">
+
+    <div class="overlay-card">
+
+        <div id="reactionIcon" class="reaction-icon">
+            🎯
+        </div>
+
+        <div id="reactionTitle" class="reaction-title">
+            IMPACTO
+        </div>
+
+        <div id="reactionText" class="reaction-text">
+            ...
+        </div>
+
+        <div class="overlay-buttons">
+
+            <button class="continue-btn"
+                    onclick="continuePlaying()">
+                ▶️ SEGUIR JUGANDO
+            </button>
+
+            <button class="abandon-btn"
+                    onclick="askAbandon()">
+                🏳️ ABANDONAR PARTIDA
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     TURNO RENÉ
+===================================================== -->
+
+<div id="computerOverlay" class="overlay">
+
+    <div class="overlay-card">
+
+        <div class="reaction-icon">🤖</div>
+
+        <div class="reaction-title">
+            TURNO DE RENÉ
+        </div>
+
+        <div class="reaction-text">
+            RENÉ está calculando...
+            <br><br>
+            <b>
+                “Pensá bien dónde pusiste tus barcos...
+                porque voy por ellos.”
+            </b>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     ABANDONO
+===================================================== -->
+
+<div id="abandonOverlay" class="overlay">
+
+    <div class="overlay-card">
+
+        <div class="reaction-icon">😏</div>
+
+        <div class="reaction-title">
+            ¿ABANDONAR?
+        </div>
+
+        <div id="abandonText"
+             class="reaction-text">
+        </div>
+
+        <div class="overlay-buttons">
+
+            <button class="abandon-btn"
+                    onclick="confirmAbandon()">
+                🏳️ SÍ, ABANDONO
+            </button>
+
+            <button class="continue-btn"
+                    onclick="cancelAbandon()">
+                😤 NO, SIGO JUGANDO
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FINAL
+===================================================== -->
+
+<div id="endOverlay" class="overlay">
+
+    <div class="overlay-card end-card">
+
+        <div id="endTitle" class="final-title">
+            FIN
+        </div>
+
+        <div id="endSubtitle"
+             class="final-subtitle">
+        </div>
+
+        <div class="end-message"
+             id="endMessage">
+        </div>
+
+        <h3>
+            🗺️ LA FLOTA SECRETA DE RENÉ
+        </h3>
+
+        <p>
+            Esta es la flota que RENÉ había preparado
+            <b>para esta misma partida</b>.
+        </p>
+
+        <div class="legend">
+
+            <div class="legend-item">
+                <span class="legend-dot"
+                      style="background:#d62828"></span>
+                Portaaviones
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-dot"
+                      style="background:#f77f00"></span>
+                Acorazado
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-dot"
+                      style="background:#277da1"></span>
+                Crucero
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-dot"
+                      style="background:#2a9d8f"></span>
+                Submarino
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-dot"
+                      style="background:#7b2cbf"></span>
+                Destructor
+            </div>
+
+        </div>
+
+        <div class="final-board">
+            <canvas id="finalBoard"
+                    width="700"
+                    height="700"></canvas>
+        </div>
+
+        <button class="restart-btn"
+                onclick="restartGame()">
+            🔄 JUGAR OTRA VEZ
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+const canvas = document.getElementById("board");
+const ctx = canvas.getContext("2d");
+
+const finalCanvas = document.getElementById("finalBoard");
+const finalCtx = finalCanvas.getContext("2d");
+
+let x = 0;
+let y = 0;
+
+let selectedAxis = "x";
+
+let editing = {
+    x:"",
+    y:""
+};
+
+let playerHits = 0;
+let computerHits = 0;
+let playerShots = 0;
+
+let gameOver = false;
+
+let fleet = [];
+
+let playerAttackHistory = [];
+
+let computerShots = [];
+
+let lastComputerHit = null;
+
+let fleetVisible = false;
+
+let nextTurn = "player";
+
+
+/* =====================================================
+   BARCOS
+===================================================== */
+
+const shipTypes = [
+
+    {
+        name:"Portaaviones",
+        size:5,
+        color:"#d62828"
+    },
+
+    {
+        name:"Acorazado",
+        size:4,
+        color:"#f77f00"
+    },
+
+    {
+        name:"Crucero",
+        size:3,
+        color:"#277da1"
+    },
+
+    {
+        name:"Submarino",
+        size:3,
+        color:"#2a9d8f"
+    },
+
+    {
+        name:"Destructor",
+        size:2,
+        color:"#7b2cbf"
+    }
+
+];
+
+
+/* =====================================================
+   MENSAJES
+===================================================== */
+
+const messages = {
+
+hit:[
+"¡GOOOOOOOOL! ⚽ ¡ADENTRO! Como tiro libre del GOAT Messi.",
+"¡IMPACTO! 🎯 René acaba de sentir el golpe.",
+"¡LE PEGASTE! Esa coordenada dolió.",
+"¡QUÉ PRECISIÓN! Ni con GPS encontraba ese punto.",
+"¡IMPACTO CARTESIANO! 📐",
+"¡GOLAZO! Esa coordenada fue directamente al ángulo.",
+"¡MESSI APARECIÓ! 🎯 Precisión quirúrgica.",
+"¡LA ENCONTRASTE! René empieza a preocuparse.",
+"¡PUM! 💥 Una coordenada menos para René.",
+"¡BIEN AHÍ! Esa estrategia empieza a funcionar.",
+"¡IMPACTO LIMPIO! René perdió la sonrisa.",
+"¡GOOOOOL! Qué precisión... parecía un tiro libre de Messi.",
+"¡LE DISTE JUSTO! Eso fue matemática aplicada.",
+"¡OTRO IMPACTO! La flota de René tiembla.",
+"¡ESA COORDENADA ERA BUENA! 🔥",
+"¡GOL DE ARGENTINA! 🇦🇷 René no llegó.",
+"¡DERECHO AL BLANCO!",
+"¡IMPACTO! Tu plano está funcionando.",
+"¡QUÉ PUNTERÍA!",
+"¡RENÉ RECIBE DAÑO! 🤖"
+],
+
+water:[
+"🌊 ¡AGUA! René se ríe... por ahora.",
+"¡AFUERA! Esa coordenada estaba más perdida que una pelota en la tribuna.",
+"🌊 Nada por acá. Seguí buscando.",
+"¡AGUA! Messi tampoco mete todos los tiros.",
+"¡FALLASTE! Pero todavía queda partido.",
+"🌊 Esa coordenada no tenía barco.",
+"René: “¿Eso era un ataque?” 😏",
+"¡AGUA! Te fuiste a otro cuadrante.",
+"Ni el Dibu llegaba a salvar ese ataque. 😂",
+"¡AGUA! La estrategia necesita un ajuste.",
+"René esquivó ese misil matemático.",
+"¡A NADA! Bueno... en realidad, a agua.",
+"🌊 Coordenada equivocada.",
+"Eso fue más centro que tiro al arco.",
+"¡AGUA! Todavía no encontraste el tesoro.",
+"René: “Gracias por avisarme dónde NO estoy.” 😎",
+"¡FALLASTE! Pero la Scaloneta también sabe reponerse.",
+"Agua detectada. 🚨",
+"¡NOOO! Esa coordenada estaba vacía.",
+"René sigue tranquilo... demasiado tranquilo."
+],
+
+sunk:[
+"💥 ¡HUNDIDO! ¡GOOOOOOOL! ¡Qué misil!",
+"🚢 ¡BARCO HUNDIDO! René pierde una pieza.",
+"¡HUNDIDO! Esa fue una definición de campeón.",
+"¡A LA PROFUNDIDAD! 🌊",
+"¡BARCO FUERA! La flota de René acaba de recibir un golpe enorme.",
+"¡GOOOLAZO! Ese barco ya no vuelve.",
+"¡HUNDIDO! Como un penal bien pateado por Messi.",
+"¡RENÉ PIERDE UN BARCO! 🤖",
+"¡MISIL CARTESIANO! 🚀",
+"¡HUNDIDO! Dibu no tenía nada que hacer ahí.",
+"¡UNO MENOS! La estrategia funciona.",
+"¡BARCO DE RENÉ AL FONDO!",
+"¡QUÉ GOLPE! René está empezando a preocuparse.",
+"¡HUNDIDO! Eso fue una jugada de Mundial.",
+"¡ADENTRO! René perdió otro barco.",
+"¡FLOTA DAÑADA! 💥",
+"¡BARCO HUNDIDO! ¡La Scaloneta matemática avanza!",
+"¡EXCELENTE! Encontraste todas sus posiciones.",
+"¡KO CARTESIANO!",
+"¡RENÉ ACABA DE PERDER UN BARCO!"
+],
+
+computerHit:[
+"🤖 RENÉ: “¡IMPACTO! Te encontré.”",
+"¡ATAQUE DE RENÉ! 🎯 Esa coordenada estaba ocupada.",
+"RENÉ: “Messi tiene la 10. Yo tengo el plano cartesiano.” 😏",
+"¡IMPACTO! René encontró uno de tus barcos.",
+"🤖 René apunta mejor de lo que parecía.",
+"¡CUIDADO! René está siguiendo una estrategia.",
+"RENÉ: “Te dije que iba a encontrarte.”",
+"¡IMPACTO! La flota argentina recibe daño.",
+"¡RENÉ PEGA! Esto se puso serio.",
+"RENÉ encontró una coordenada peligrosa.",
+"¡ATAQUE PRECISO! 🤖",
+"RENÉ no está jugando a adivinar.",
+"¡IMPACTO CARTESIANO DE RENÉ!",
+"RENÉ: “¿Pensaste que iba a fallar?”",
+"¡TU FLOTA RECIBE DAÑO!",
+"¡RENÉ ENCONTRÓ UN BLANCO!",
+"¡OJO! René está siguiendo las pistas.",
+"RENÉ conecta el ataque.",
+"¡IMPACTO! Hay problemas en tu flota.",
+"🤖 RENÉ suma otro golpe."
+],
+
+computerWater:[
+"🌊 RENÉ FALLÓ. Tu barco respiró.",
+"¡AGUA! René se fue a cualquier cuadrante.",
+"RENÉ: “Eso fue un pequeño error de cálculo...” 😐",
+"¡AGUA! ¡El Dibu estaría orgulloso!",
+"RENÉ FALLÓ SU ATAQUE.",
+"🌊 Tu flota sigue escondida.",
+"¡RENÉ NO ENCONTRÓ NADA!",
+"¡ATAQUE FALLIDO! La defensa funciona.",
+"RENÉ tiró al agua.",
+"¡AGUA! Esta vez ganaste vos.",
+"René está buscando en el lugar equivocado.",
+"¡FALLÓ! 😎",
+"Tu flota sigue a salvo.",
+"¡RENÉ ERRÓ LA COORDENADA!",
+"🌊 Nada por acá.",
+"René necesita recalcular.",
+"¡ATAQUE DESVIADO!",
+"RENÉ: “Fue una prueba estratégica.” 😂",
+"¡AGUA! Tu defensa resiste.",
+"¡RENÉ NO TE ENCONTRÓ!"
+],
+
+computerSunk:[
+"💥 ¡RENÉ HUNDIÓ TU BARCO!",
+"🚢 ¡BARCO HUNDIDO! René te encontró todas las posiciones.",
+"¡HUNDIDO! René está empezando a dominar el plano.",
+"🤖 RENÉ: “Gracias por dejarme tantas pistas.”",
+"¡TU BARCO SE FUE AL FONDO!",
+"¡RENÉ COMPLETÓ EL ATAQUE!",
+"¡BARCO HUNDIDO! La defensa falló.",
+"¡PUM! René acaba de hundir una pieza.",
+"¡HUNDIDO! Esto se puso complicado.",
+"RENÉ encontró todas las coordenadas del barco.",
+"¡OTRO BARCO MENOS!",
+"¡RENÉ ATACA CON PRECISIÓN!",
+"¡HUNDIDO! El plano cartesiano no perdona.",
+"¡RENÉ SE LLEVA OTRO BARCO!",
+"¡GOL DE RENÉ! 🤖",
+"¡BARCO FUERA DE COMBATE!",
+"¡RENÉ NO PERDONA!",
+"¡TU FLOTA ESTÁ SUFRIENDO!",
+"¡HUNDIDO! La estrategia de René funciona.",
+"RENÉ acaba de conseguir un hundimiento."
+],
+
+repeat:[
+"😏 Esa coordenada ya la atacaste.",
+"¡REPETIDA! No podés patear dos veces el mismo penal.",
+"RENÉ: “¿Otra vez esa coordenada?” 😂",
+"Ya disparaste ahí.",
+"Esa coordenada ya está en tu historial.",
+"¡NO GASTES MUNICIÓN!",
+"¡COORDENADA REPETIDA!",
+"Eso ya lo habías probado.",
+"René agradece tu insistencia. 😏",
+"¡Esa ya la conocemos!",
+"Buscá otra coordenada.",
+"¡REPETIDO! Tu estrategia necesita memoria.",
+"Messi no patea dos veces el mismo penal.",
+"¡YA ATACASTE ESE PUNTO!",
+"Tu historial dice que ya estuviste ahí.",
+"¡NO REPITAS EL ATAQUE!",
+"Coordenada reciclada. 😂",
+"¡ESA YA FUE!",
+"René: “Probá con otra...”",
+"¡ATAQUE REPETIDO!"
+]
+
+};
+
+
+/* =====================================================
+   UTILIDADES
+===================================================== */
+
+function randomMessage(category){
+
+    const arr = messages[category];
+
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
+
+function showScreen(id){
+
+    document.querySelectorAll(".screen")
+        .forEach(el=>el.classList.add("hidden"));
+
+    document.getElementById(id)
+        .classList.remove("hidden");
+}
+
+
+/* =====================================================
+   INICIO
+===================================================== */
+
+function showPrep(){
+
+    showScreen("prepScreen");
+
+}
+
+
+function startGame(){
+
+    showScreen("gameScreen");
+
+    resetGame();
+
+    fleet = generateFleet();
+
+    fleetVisible = false;
+
+    drawBoard();
+
+    document.getElementById("message").textContent =
+        "🎯 Tu turno. Elegí una coordenada para atacar.";
+
+}
+
+
+function resetGame(){
+
+    x=0;
+    y=0;
+
+    selectedAxis="x";
+
+    editing={
+        x:"",
+        y:""
+    };
+
+    playerHits=0;
+    computerHits=0;
+    playerShots=0;
+
+    gameOver=false;
+
+    fleet=[];
+
+    playerAttackHistory=[];
+
+    computerShots=[];
+
+    lastComputerHit=null;
+
+    fleetVisible=false;
+
+    nextTurn="player";
+
+    updateDisplays();
+
+    document.getElementById("historyList").innerHTML =
+        "Todavía no atacaste.";
+
+}
+
+
+/* =====================================================
+   GENERACIÓN DE FLOTA
+===================================================== */
+
+function generateFleet(){
+
+    const result=[];
+
+    for(const type of shipTypes){
+
+        let placed=false;
+
+        let attempts=0;
+
+        while(!placed && attempts<5000){
+
+            attempts++;
+
+            const horizontal =
+                Math.random()<.5;
+
+            const startX =
+                randomInt(-10,10);
+
+            const startY =
+                randomInt(-10,10);
+
+            const cells=[];
+
+            let valid=true;
+
+            for(let i=0;i<type.size;i++){
+
+                const cx =
+                    startX + (horizontal ? i : 0);
+
+                const cy =
+                    startY + (horizontal ? 0 : i);
+
+                if(cx<-10 || cx>10 ||
+                   cy<-10 || cy>10){
+
+                    valid=false;
+                    break;
+                }
+
+                if(result.some(c=>c.x===cx && c.y===cy)){
+
+                    valid=false;
+                    break;
+                }
+
+                cells.push({
+                    x:cx,
+                    y:cy,
+                    ship:type.name,
+                    hit:false
+                });
+
+            }
+
+            if(valid){
+
+                result.push(...cells);
+
+                placed=true;
+            }
+
+        }
+
+    }
+
+    return result;
+}
+
+
+function randomInt(min,max){
+
+    return Math.floor(
+        Math.random()*(max-min+1)
+    )+min;
+
+}
+
+
+/* =====================================================
+   TECLADO
+===================================================== */
+
+function selectAxis(axis){
+
+    selectedAxis=axis;
+
+    document.getElementById("axisX")
+        .classList.toggle("active",axis==="x");
+
+    document.getElementById("axisY")
+        .classList.toggle("active",axis==="y");
+
+}
+
+
+function setSign(axis,sign){
+
+    let value =
+        editing[axis].replace("-","");
+
+    if(value===""){
+        value="0";
+    }
+
+    value=parseInt(value);
+
+    if(sign<0 && value!==0){
+
+        editing[axis]="-"+value;
+
+    }else{
+
+        editing[axis]=String(value);
+
+    }
+
+    updateCoordinates();
+
+}
+
+
+function pressDigit(digit){
+
+    let value=editing[selectedAxis];
+
+    if(value==="0"){
+        value="";
+    }
+
+    value += digit;
+
+    let number =
+        parseInt(value||"0");
+
+    if(number>10){
+        number=10;
+    }
+
+    editing[selectedAxis]=String(number);
+
+    updateCoordinates();
+
+}
+
+
+function clearCurrent(){
+
+    editing[selectedAxis]="";
+
+    updateCoordinates();
+
+}
+
+
+function backspace(){
+
+    editing[selectedAxis] =
+        editing[selectedAxis].slice(0,-1);
+
+    updateCoordinates();
+
+}
+
+
+function updateCoordinates(){
+
+    x =
+        editing.x===""
+        ? 0
+        : parseInt(editing.x);
+
+    y =
+        editing.y===""
+        ? 0
+        : parseInt(editing.y);
+
+    document.getElementById("xDisplay")
+        .textContent=x;
+
+    document.getElementById("yDisplay")
+        .textContent=y;
+
+}
+
+
+/* =====================================================
+   ATAQUE DEL JUGADOR
+===================================================== */
+
+function playerAttack(){
+
+    if(gameOver || nextTurn!=="player")
+        return;
+
+    const key =
+        `${x},${y}`;
+
+    if(
+        playerAttackHistory
+        .some(s=>s.x===x && s.y===y)
+    ){
+
+        showReaction(
+            "🔁",
+            "¡REPETIDA!",
+            randomMessage("repeat"),
+            "player"
+        );
+
+        return;
+    }
+
+
+    playerShots++;
+
+    const target =
+        fleet.find(
+            c=>c.x===x && c.y===y
+        );
+
+
+    if(target){
+
+        target.hit=true;
+
+        playerHits++;
+
+        const shipCells =
+            fleet.filter(
+                c=>c.ship===target.ship
+            );
+
+        const sunk =
+            shipCells.every(c=>c.hit);
+
+        playerAttackHistory.push({
+
+            x:x,
+            y:y,
+            result:sunk
+                ?"hundido"
+                :"impacto"
+
+        });
+
+        updateStats();
+
+        updateHistory();
+
+        drawBoard();
+
+
+        if(playerHits>=17){
+
+            endGame(true);
+
+            return;
+
+        }
+
+
+        if(sunk){
+
+            showReaction(
+                "💥",
+                "¡HUNDIDO!",
+                randomMessage("sunk"),
+                "computer"
+            );
+
+        }else{
+
+            showReaction(
+                "🎯",
+                "¡IMPACTO!",
+                randomMessage("hit"),
+                "computer"
+            );
+
+        }
+
+    }else{
+
+        playerAttackHistory.push({
+
+            x:x,
+            y:y,
+            result:"agua"
+
+        });
+
+        updateHistory();
+
+        drawBoard();
+
+
+        showReaction(
+            "🌊",
+            "¡AGUA!",
+            randomMessage("water"),
+            "computer"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   TURNO DE RENÉ
+===================================================== */
+
+function computerTurn(){
+
+    if(gameOver)
+        return;
+
+    nextTurn="computer";
+
+    document.getElementById("computerOverlay")
+        .classList.add("active");
+
+    setTimeout(()=>{
+
+        document.getElementById("computerOverlay")
+            .classList.remove("active");
+
+        performComputerAttack();
+
+    },900);
+
+}
+
+
+function performComputerAttack(){
+
+    if(gameOver)
+        return;
+
+
+    let point =
+        chooseComputerCoordinate();
+
+
+    const key =
+        `${point.x},${point.y}`;
+
+
+    if(
+        computerShots.some(
+            s=>s.x===point.x && s.y===point.y
+        )
+    ){
+
+        return performComputerAttack();
+
+    }
+
+
+    computerShots.push(point);
+
+
+    const hit =
+        getPlayerResult(point);
+
+
+    if(hit==="hundido"){
+
+        computerHits++;
+
+        lastComputerHit=null;
+
+        updateStats();
+
+        drawBoard();
+
+
+        if(computerHits>=17){
+
+            endGame(false);
+
+            return;
+
+        }
+
+
+        showReaction(
+            "💥",
+            "¡HUNDIDO!",
+            randomMessage("computerSunk"),
+            "player"
+        );
+
+    }
+
+    else if(hit==="impacto"){
+
+        computerHits++;
+
+        lastComputerHit={
+            x:point.x,
+            y:point.y
+        };
+
+        updateStats();
+
+        drawBoard();
+
+
+        if(computerHits>=17){
+
+            endGame(false);
+
+            return;
+
+        }
+
+
+        showReaction(
+            "🎯",
+            "¡IMPACTO DE RENÉ!",
+            randomMessage("computerHit"),
+            "player"
+        );
+
+    }
+
+    else{
+
+        lastComputerHit=null;
+
+        updateStats();
+
+        drawBoard();
+
+
+        showReaction(
+            "🌊",
+            "¡AGUA!",
+            randomMessage("computerWater"),
+            "player"
+        );
+
+    }
+
+}
+
+
+/*
+    Como la flota del jugador está solamente
+    en papel, el sistema no puede saber qué
+    coordenada corresponde a impacto.
+
+    Por eso RENÉ anuncia una coordenada y
+    el estudiante debe indicar el resultado.
+*/
+
+function getPlayerResult(point){
+
+    const answer =
+        prompt(
+            `🤖 RENÉ ataca la coordenada (${point.x}; ${point.y}).\n\n`+
+            `Escribí:\n`+
+            `I = IMPACTO\n`+
+            `A = AGUA\n`+
+            `H = HUNDIDO`
+        );
+
+    if(!answer)
+        return "agua";
+
+    const a =
+        answer.trim().toUpperCase();
+
+    if(a==="H")
+        return "hundido";
+
+    if(a==="I")
+        return "impacto";
+
+    return "agua";
+
+}
+
+
+/* =====================================================
+   ESTRATEGIA RENÉ
+===================================================== */
+
+function chooseComputerCoordinate(){
+
+    /*
+       Si René logró un impacto,
+       intenta las coordenadas vecinas.
+    */
+
+    if(lastComputerHit){
+
+        const options=[
+            {
+                x:lastComputerHit.x+1,
+                y:lastComputerHit.y
+            },
+            {
+                x:lastComputerHit.x-1,
+                y:lastComputerHit.y
+            },
+            {
+                x:lastComputerHit.x,
+                y:lastComputerHit.y+1
+            },
+            {
+                x:lastComputerHit.x,
+                y:lastComputerHit.y-1
+            }
+        ];
+
+        const valid=
+            options.filter(p=>
+                p.x>=-10 &&
+                p.x<=10 &&
+                p.y>=-10 &&
+                p.y<=10 &&
+                !computerShots.some(
+                    s=>s.x===p.x && s.y===p.y
+                )
+            );
+
+        if(valid.length){
+
+            return valid[
+                Math.floor(
+                    Math.random()*valid.length
+                )
+            ];
+
+        }
+
+    }
+
+
+    let point;
+
+    do{
+
+        point={
+            x:randomInt(-10,10),
+            y:randomInt(-10,10)
+        };
+
+    }while(
+        computerShots.some(
+            s=>s.x===point.x &&
+            s.y===point.y
+        )
+    );
+
+
+    return point;
+}
+
+
+/* =====================================================
+   REACCIONES
+===================================================== */
+
+function showReaction(
+    icon,
+    title,
+    text,
+    turnAfter
+){
+
+    document.getElementById("reactionIcon")
+        .textContent=icon;
+
+    document.getElementById("reactionTitle")
+        .textContent=title;
+
+    document.getElementById("reactionText")
+        .textContent=text;
+
+    nextTurn=turnAfter;
+
+    document.getElementById("reactionOverlay")
+        .classList.add("active");
+
+}
+
+
+function continuePlaying(){
+
+    document.getElementById("reactionOverlay")
+        .classList.remove("active");
+
+    if(gameOver)
+        return;
+
+
+    if(nextTurn==="computer"){
+
+        setTimeout(
+            computerTurn,
+            350
+        );
+
+    }else{
+
+        document.getElementById("message")
+            .textContent =
+            "🎯 Tu turno. Elegí una coordenada para atacar.";
+
+        drawBoard();
+
+    }
+
+}
+
+
+/* =====================================================
+   ABANDONAR
+===================================================== */
+
+const abandonMessages=[
+
+"¿ABANDONAR? 😏 Pensé que tenía un rival... pero resultaste ser un COBARDE CARTESIANO.",
+
+"¿Ya te vas? ¡Si recién empezaba! 😎 RENÉ detectó miedo en los cuatro cuadrantes.",
+
+"¡COBARDÍA DETECTADA! 🤖 Pensé que venías a luchar, no a escapar.",
+
+"¿Abandonar una batalla matemática? 😏 La Scaloneta juega hasta el final. Vos duraste menos que un recreo.",
+
+"¡JAJAJA! ¿Te asustaron unos simples puntos en el plano? MIEDOSO.",
+
+"El verdadero desafío no era encontrar mis barcos... era encontrar tu valentía. Y parece que estaba en otra coordenada.",
+
+"¿Te vas? Tranquilo. RENÉ guardará esta derrota como 'victoria por abandono'. 😎",
+
+"¡Miedoso detectado! 📡 RENÉ confirma: faltó valor y sobró botón de abandonar.",
+
+"Pensé que iba a enfrentar a un estratega... pero encontré a alguien buscando la salida. 😂",
+
+"¡NOOO! ¿Tan rápido? El plano cartesiano no da miedo... ¿o sí?",
+
+"Messi no abandona una final. Dibu no abandona el arco. ¿Y vos abandonás por unas coordenadas?",
+
+"¡ESCAPASTE! 🏃 RENÉ gana por KO psicológico.",
+
+"¿Abandonar? Eso no estaba en las reglas de la valentía matemática.",
+
+"Te propongo algo: quedate y luchá. Porque escapar es demasiado fácil.",
+
+"RENÉ registra oficialmente: 'rival vencido por miedo'. 😏"
+
+];
+
+
+function askAbandon(){
+
+    const msg =
+        abandonMessages[
+            Math.floor(
+                Math.random()*
+                abandonMessages.length
+            )
+        ];
+
+    document.getElementById("abandonText")
+        .textContent=msg;
+
+    document.getElementById("abandonOverlay")
+        .classList.add("active");
+
+}
+
+
+function cancelAbandon(){
+
+    document.getElementById("abandonOverlay")
+        .classList.remove("active");
+
+}
+
+
+function confirmAbandon(){
+
+    document.getElementById("abandonOverlay")
+        .classList.remove("active");
+
+    document.getElementById("reactionOverlay")
+        .classList.remove("active");
+
+    endGame("abandon");
+
+}
+
+
+/* =====================================================
+   FINAL DE PARTIDA
+===================================================== */
+
+function endGame(result){
+
+    gameOver=true;
+
+    /*
+       CLAVE:
+       La flota NO se vuelve a generar.
+       Se muestra exactamente la misma
+       flota que RENÉ tenía durante la partida.
+    */
+
+    fleetVisible=true;
+
+    drawBoard();
+
+    drawFinalBoard();
+
+
+    const title =
+        document.getElementById("endTitle");
+
+    const subtitle =
+        document.getElementById("endSubtitle");
+
+    const message =
+        document.getElementById("endMessage");
+
+
+    if(result===true){
+
+        title.textContent=
+            "🏆 ¡GANASTE!";
+
+        subtitle.textContent=
+            "¡DERROTASTE A RENÉ!";
+
+        message.innerHTML=
+            `
+            <b>¡INCREÍBLE!</b><br><br>
+            Encontraste las 17 posiciones de la flota
+            de RENÉ.
+            <br><br>
+            🤖 RENÉ:
+            <i>
+            “No puede ser... ¡me derrotaste!
+            Tendré que revisar mis cálculos.”
+            </i>
+            <br><br>
+            🇦🇷 ¡La Scaloneta matemática acaba de ganar!
+            `;
+
+    }
+
+    else if(result===false){
+
+        title.textContent=
+            "🤖 RENÉ GANA";
+
+        subtitle.textContent=
+            "LA FLOTA CARTESIANA FUE DERROTADA";
+
+        message.innerHTML=
+            `
+            <b>RENÉ TE GANÓ.</b><br><br>
+            Encontró las 17 posiciones de tu flota.
+            <br><br>
+            🤖 RENÉ:
+            <i>
+            “La estrategia tenía que ser mejor.
+            El plano cartesiano no perdona.”
+            </i>
+            <br><br>
+            Pero ahora tenés una ventaja:
+            podés analizar dónde estaban mis barcos
+            y cómo fui atacando.
+            `;
+
+    }
+
+    else{
+
+        title.textContent=
+            "🏳️ PARTIDA ABANDONADA";
+
+        subtitle.textContent=
+            "RENÉ GANA POR ABANDONO";
+
+        message.innerHTML=
+            `
+            <b>RENÉ SE QUEDA CON LA VICTORIA.</b><br><br>
+            Ya que abandonaste...
+            <br><br>
+            🤖 RENÉ:
+            <i>
+            “Bueno... ya que te vas, te muestro
+            dónde estaban mis barcos.
+            Quizás en la próxima tengas más suerte.”
+            </i>
+            <br><br>
+            🗺️ Analizá la flota y pensá:
+            <b>¿qué estrategia hubieras utilizado
+            para encontrarla?</b>
+            `;
+
+    }
+
+
+    document.getElementById("endOverlay")
+        .classList.add("active");
+
+}
+
+
+/* =====================================================
+   ESTADÍSTICAS
+===================================================== */
+
+function updateStats(){
+
+    document.getElementById("playerScore")
+        .textContent=playerHits;
+
+    document.getElementById("computerScore")
+        .textContent=computerHits;
+
+}
+
+
+function updateDisplays(){
+
+    document.getElementById("xDisplay")
+        .textContent=x;
+
+    document.getElementById("yDisplay")
+        .textContent=y;
+
+}
+
+
+/* =====================================================
+   HISTORIAL
+===================================================== */
+
+function updateHistory(){
+
+    const container =
+        document.getElementById("historyList");
+
+
+    if(playerAttackHistory.length===0){
+
+        container.innerHTML=
+            "Todavía no atacaste.";
+
+        return;
+
+    }
+
+
+    container.innerHTML="";
+
+
+    [...playerAttackHistory]
+        .reverse()
+        .forEach((shot,index)=>{
+
+            const div=
+                document.createElement("div");
+
+            div.className=
+                "shot "+
+                (
+                    shot.result==="agua"
+                    ?"water"
+                    :
+                    shot.result==="hundido"
+                    ?"sunk"
+                    :"hit"
+                );
+
+
+            let text="";
+
+            if(shot.result==="agua")
+                text="🌊 AGUA";
+
+            if(shot.result==="impacto")
+                text="🎯 IMPACTO";
+
+            if(shot.result==="hundido")
+                text="💥 HUNDIDO";
+
+
+            div.textContent=
+                `${playerAttackHistory.length-index}. (${shot.x}; ${shot.y}) — ${text}`;
+
+
+            container.appendChild(div);
+
+        });
+
+}
+
+
+/* =====================================================
+   DIBUJAR PLANO
+===================================================== */
+
+function drawBoard(){
+
+    drawCartesianBoard(
+        ctx,
+        fleetVisible
+    );
+
+}
+
+
+function drawFinalBoard(){
+
+    drawCartesianBoard(
+        finalCtx,
+        true
+    );
+
+}
+
+
+function drawCartesianBoard(context,showFleet){
+
+    const W=700;
+    const H=700;
+
+    context.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    context.fillStyle="#f4f6f7";
+
+    context.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    const margin=65;
+
+    const size=570;
+
+    const cell=size/20;
+
+
+    function pxX(value){
+
+        return margin+
+            (value+10)*cell;
+
+    }
+
+
+    function pxY(value){
+
+        return margin+
+            (10-value)*cell;
+
+    }
+
+
+    /* CUADRÍCULA */
+
+    context.strokeStyle="#d4dbe0";
+
+    context.lineWidth=1;
+
+
+    for(let i=-10;i<=10;i++){
+
+        const xx=pxX(i);
+
+        context.beginPath();
+
+        context.moveTo(
+            xx,
+            margin
+        );
+
+        context.lineTo(
+            xx,
+            margin+size
+        );
+
+        context.stroke();
+
+
+        const yy=pxY(i);
+
+        context.beginPath();
+
+        context.moveTo(
+            margin,
+            yy
+        );
+
+        context.lineTo(
+            margin+size,
+            yy
+        );
+
+        context.stroke();
+
+    }
+
+
+    /* EJES */
+
+    context.strokeStyle="#17212b";
+
+    context.lineWidth=3;
+
+
+    context.beginPath();
+
+    context.moveTo(
+        pxX(0),
+        margin
+    );
+
+    context.lineTo(
+        pxX(0),
+        margin+size
+    );
+
+    context.stroke();
+
+
+    context.beginPath();
+
+    context.moveTo(
+        margin,
+        pxY(0)
+    );
+
+    context.lineTo(
+        margin+size,
+        pxY(0)
+    );
+
+    context.stroke();
+
+
+    /* FLECHAS */
+
+    context.fillStyle="#17212b";
+
+    context.beginPath();
+
+    context.moveTo(
+        margin+size+12,
+        pxY(0)
+    );
+
+    context.lineTo(
+        margin+size-3,
+        pxY(0)-7
+    );
+
+    context.lineTo(
+        margin+size-3,
+        pxY(0)+7
+    );
+
+    context.fill();
+
+
+    context.beginPath();
+
+    context.moveTo(
+        pxX(0),
+        margin-12
+    );
+
+    context.lineTo(
+        pxX(0)-7,
+        margin+3
+    );
+
+    context.lineTo(
+        pxX(0)+7,
+        margin+3
+    );
+
+    context.fill();
+
+
+    /* NÚMEROS */
+
+    context.fillStyle="#263238";
+
+    context.font="12px Arial";
+
+    context.textAlign="center";
+
+    context.textBaseline="middle";
+
+
+    for(let i=-10;i<=10;i++){
+
+        if(i!==0){
+
+            context.fillText(
+                i,
+                pxX(i),
+                pxY(0)+18
+            );
+
+            context.fillText(
+                i,
+                pxX(0)-20,
+                pxY(i)
+            );
+
+        }
+
+    }
+
+
+    context.font="bold 17px Arial";
+
+    context.fillText(
+        "X",
+        margin+size+22,
+        pxY(0)
+    );
+
+    context.fillText(
+        "Y",
+        pxX(0),
+        margin-25
+    );
+
+
+    /* =================================================
+       FLOTA DE RENÉ
+    ================================================= */
+
+    if(showFleet){
+
+        for(const type of shipTypes){
+
+            const cells=
+                fleet.filter(
+                    c=>c.ship===type.name
+                );
+
+
+            if(!cells.length)
+                continue;
+
+
+            /* CÉLULAS */
+
+            for(const cellData of cells){
+
+                const cx=
+                    pxX(cellData.x);
+
+                const cy=
+                    pxY(cellData.y);
+
+
+                context.fillStyle=
+                    type.color;
+
+                context.globalAlpha=.75;
+
+
+                context.fillRect(
+                    cx-cell/2+1,
+                    cy-cell/2+1,
+                    cell-2,
+                    cell-2
+                );
+
+
+                context.globalAlpha=1;
+
+
+                context.strokeStyle="#111";
+
+                context.lineWidth=1;
+
+                context.strokeRect(
+                    cx-cell/2+1,
+                    cy-cell/2+1,
+                    cell-2,
+                    cell-2
+                );
+
+            }
+
+
+            /* ETIQUETA */
+
+            const avgX=
+                cells.reduce(
+                    (sum,c)=>sum+c.x,
+                    0
+                )/cells.length;
+
+
+            const avgY=
+                cells.reduce(
+                    (sum,c)=>sum+c.y,
+                    0
+                )/cells.length;
+
+
+            context.fillStyle="#111";
+
+            context.font="bold 11px Arial";
+
+            context.textAlign="center";
+
+            context.fillText(
+                type.name,
+                pxX(avgX),
+                pxY(avgY)
+            );
+
+        }
+
+    }
+
+
+    /* =================================================
+       ATAQUES DEL JUGADOR
+    ================================================= */
+
+    for(const shot of playerAttackHistory){
+
+        const cx=pxX(shot.x);
+        const cy=pxY(shot.y);
+
+
+        if(shot.result==="agua"){
+
+            context.strokeStyle="#1976d2";
+
+            context.lineWidth=3;
+
+            context.beginPath();
+
+            context.arc(
+                cx,
+                cy,
+                cell*.25,
+                0,
+                Math.PI*2
+            );
+
+            context.stroke();
+
+        }
+
+
+        if(shot.result==="impacto"){
+
+            context.fillStyle="#e63946";
+
+            context.beginPath();
+
+            context.arc(
+                cx,
+                cy,
+                cell*.23,
+                0,
+                Math.PI*2
+            );
+
+            context.fill();
+
+        }
+
+
+        if(shot.result==="hundido"){
+
+            context.fillStyle="#111";
+
+            context.beginPath();
+
+            context.arc(
+                cx,
+                cy,
+                cell*.28,
+                0,
+                Math.PI*2
+            );
+
+            context.fill();
+
+        }
+
+    }
+
+
+    /* =================================================
+       ATAQUES DE RENÉ
+       Se muestran en el tablero final
+    ================================================= */
+
+    if(showFleet){
+
+        for(const shot of computerShots){
+
+            const cx=pxX(shot.x);
+            const cy=pxY(shot.y);
+
+            context.strokeStyle="#ff9800";
+
+            context.lineWidth=2;
+
+            context.beginPath();
+
+            context.arc(
+                cx,
+                cy,
+                cell*.38,
+                0,
+                Math.PI*2
+            );
+
+            context.stroke();
+
+        }
+
+    }
+
+
+    /* BORDE */
+
+    context.strokeStyle="#17212b";
+
+    context.lineWidth=3;
+
+    context.strokeRect(
+        margin,
+        margin,
+        size,
+        size
+    );
+
+}
+
+
+/* =====================================================
+   REINICIAR
+===================================================== */
+
+function restartGame(){
+
+    document.getElementById("endOverlay")
+        .classList.remove("active");
+
+    startGame();
+
+}
+
+
+/* =====================================================
+   INICIO
+===================================================== */
+
+showScreen("startScreen");
+
+</script>
+
+</body>
+</html>
